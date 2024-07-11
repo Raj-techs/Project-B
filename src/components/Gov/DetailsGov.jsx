@@ -9,6 +9,8 @@ const DetailsGov = () => {
     const [reqData, setreqData] = useState([])
     const [loading, setLoading] = useState(true);
 
+
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -134,16 +136,54 @@ const DetailsGov = () => {
                 </div>)}
             <div style={{ height: "100vh", position: "relative",overflowY:"scroll" }}>
 
-                <NeedAllocate />
+                <NeedAllocate reqUser={donar} />
             </div>
             {/* <Footer/> */}
         </>
     )
 }
-const NeedAllocate = _ => {
+const NeedAllocate = (props) => {
+    console.log(props);
     const [banksData, setbanksData] = useState([])
     const [loading, setLoading] = useState(true);
+    const [available,setAvailable]=useState(banksData);
+    const [searchText,setSearchText]=useState("")
 
+    const [bankNameToTransfer, setBankNameToTransfer] = useState("");
+    const [cityNameToGet, setCityNameToGet] = useState("");
+    const defaultDate = new Date().toISOString().slice(0, 10)
+
+    const handleAllocate = async (bank) => {
+    
+
+        if (!props.reqUser || !props.reqUser.units) {
+            console.error("Error: reqUser is missing or does not contain 'units'");
+            return;
+        }
+
+        try {
+            const data = {
+                fromBank: bank.bankName,
+                fromLocation: bank.location,
+                fromCity: bank.city,
+                group: props.reqUser.group,
+                units: props.reqUser.units,
+                transferToBankName: bankNameToTransfer,
+                transferCity: cityNameToGet,
+                status: "processing...",
+                date: defaultDate
+            };
+            console.log(data);
+        
+            await axios.post('http://localhost:3000/allocated', data);
+            alert('Blood allocated successfully!');
+        } catch (error) {
+            console.error("Error allocating data", error);
+        }
+    };
+
+    
+    
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -155,18 +195,39 @@ const NeedAllocate = _ => {
                 setLoading(false);
             }
         };
-
+        
         fetchData();
     }, []);
+
+    useEffect(() => {
+        setAvailable(banksData);
+    }, [banksData]);
+    
+    const filterAvailBanks = filterBank(available,searchText)
+
+    function filterBank(available,searchKey){
+        if (!available) return [];
+        return (available.filter(p => p.city && p.city.toLowerCase().includes(searchKey.toLowerCase()))
+        )
+    
+    }
     
 
     return (
+        <>
         <div style={{ position: "relative", display: "flex", justifyContent: 'center', gap: "90px", alignItems: "center", flexDirection: "column" }}>
             <div className="allocate">
                 <b>Need to : <i>Undrajavaram,U Mandal, East Godavari District,Andhra Pradesh</i></b><br />
                 <div style={{ display: "flex", justifyContent: "center", gap: "30px", marginBottom: "50px" }}>
-                    <input type="text" placeholder='Search for City' />
-                    <p>To Bank : <input type="text" placeholder='Enter Bank Name to Transfer' /></p>
+                    <input type="text" placeholder='Search for City' onChange={e=> setCityNameToGet(e.target.value)} />
+                    <p>To Bank : <input type="text" placeholder='Enter Bank Name to Transfer'  onChange={e => setBankNameToTransfer(e.target.value)} /></p>
+                </div>
+            </div>
+            <div className="allocate">
+                {/* <b>Need to : <i>Undrajavaram,U Mandal, East Godavari District,Andhra Pradesh</i></b><br /> */}
+                <div style={{ display: "flex", justifyContent: "center", gap: "30px", marginBottom: "50px" }}>
+                    <input type="text" placeholder='Search for City'  onChange={e=>setSearchText(e.target.value)}  />
+                    {/* <p>To Bank : <input type="text" placeholder='Enter Bank Name to Transfer' /></p> */}
                 </div>
             </div>
             <table width={"80%"} >
@@ -177,27 +238,41 @@ const NeedAllocate = _ => {
                     <th style={{ backgroundColor: "black", color: "white" }}>Available</th>
                     <th style={{ backgroundColor: "black", color: "white" }}>More</th>
                 </tr>
-                {banksData ? banksData.map(bank=>{
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td style={{display:"flex",gap:"10px",justifyContent:"space-around"}}><p>A+</p> <p>A-</p> <p>B+</p> <p>B- </p><p>AB+</p> <p>AB-</p> <p>O+</p> <p>O-</p></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                {filterAvailBanks ?  filterAvailBanks.map(bank=>{
+                    return (
+                        <tr>
+                        {/* <td>{bank.bankName}</td> */}
+                        <td>{bank.bankName}</td>
+                        <td>{bank.city}</td>
+                        <td style={{display:"flex",gap:"10px",justifyContent:"space-around"}}><p>A+</p> <p>A-</p> <p>B+</p> <p>B- </p><p>AB+</p> <p>AB-</p> <p>O+</p> <p>O-</p></td>
+
+                        <td>5</td>
+                        <td><button className='btn' onClick={() => handleAllocate(bank)}>Allocate</button></td>
+                    </tr>
+                    )
+                }):banksData.map(bank=>{
                     return (
                         <tr>
                         <td>{bank.bankName}</td>
                         <td>{bank.city}</td>
                         <td>group</td>
-                        <td>5</td>
-                        <td><button className='btn'>Allocate</button></td>
+                        <td>0</td>
+                        <td><button className='btn' onClick={() => handleAllocate(bank)}>Allocate</button></td>
                     </tr>
                     )
-                }) : null }
+                }) }
                
-                <tr>
-                    <td>TNK</td>
-                    <td>BB1</td>
-                    <td>BB2</td>
-                    <td>process</td>
-                    <td><button className='btn'>Allocate</button></td>
-                </tr>
+                
             </table>
         </div>
+        </>
     )
 }
 

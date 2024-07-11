@@ -14,7 +14,7 @@ const Dashboard = () => {
             <div className="gov-dash">
                 <div className="divs">
                     <i class="fa-regular fa-hospital"></i>
-                    <h2>Total Banks</h2>
+                    <h2 >Total Banks</h2>
                     <h3>{bank.length}</h3>
                 </div>
                 <div className="divs">

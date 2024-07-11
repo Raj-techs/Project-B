@@ -1,6 +1,23 @@
-import React from 'react'
+import axios from 'axios';
+import React, { useEffect, useState } from 'react'
 
 const Transfer = () => {
+  const [allcatedData,setallocateData]=useState([])
+  const [loading,setLoading]=useState(false)
+  useEffect(() => {
+    const fetchData = async () => {
+        try {
+            const res = await axios.get("http://localhost:3000/allocated");
+            setallocateData(res.data);
+        } catch (error) {
+            console.error("Error fetching data", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    fetchData();
+}, []);
   return (
     <>
       <div className="gov-transfer">
@@ -10,34 +27,29 @@ const Transfer = () => {
         </div>
         <table>
             <tr >
-                <th>City</th>
                 <th>From</th>
+                <th>Loc</th>
                 <th>To</th>
+                <th>Loc</th>
+                <th>Group</th>
+                <th>Units</th>
                 <th>Status</th>
                 <th>More</th>
             </tr>
-            <tr>
-                <td>TNK</td>
-                <td>BB1</td>
-                <td>BB2</td>
-                <td>process</td>
-                <td>Cancel</td>
-            </tr>
-            <tr>
-                <td>BVRM</td>
-                <td>BB3</td>
-                <td>BB4</td>
-                <td>Completed</td>
-                <td>Cancel</td>
-            </tr>
+            {allcatedData.map(item=>{
+              return(<tr>
+                <td>{item.fromBank}</td>
+                <td>{item.fromCity}</td>
+                <td>{item.transferToBankName}</td>
+                <td>{item.transferCity}</td>
+                <td>{item.group}</td>
+                <td>{item.units}</td>
+                <td>{item.status}</td>
+            </tr>)
+            })}
+            
 
-            <tr>
-                <td>TNK</td>
-                <td>BB1</td>
-                <td>BB2</td>
-                <td>process</td>
-                <td>Cancel</td>
-            </tr>        </table>
+                    </table>
         <div className="gov-trans-data"></div>
       </div>
     </>

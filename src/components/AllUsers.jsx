@@ -42,7 +42,7 @@ const AllUsers = (props) => {
         <>
 
             {/* <UserContext.Provider value={filterUsers}> */}
-            <div style={{marginTop:"380px"}}>
+            <div className='all-users' style={{marginTop:"380px"}}>
             <h1>BLOOD GROUPS... 🩸</h1>
             <div class="button-container">
                 <button>A+</button>

@@ -4,14 +4,42 @@ import Footer from '../Footer'
 import axios from 'axios'
 
 const Status = () => {
-    const [myData,setmyData]=useState()
-
+    const [userData, setUserData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [myData, setMyData] = useState(null);
+    const [donatedBanks, setDonatedBanks] = useState([]);
 
     useEffect(_=>{
-        axios.get("http://localhost:4000/user/myprofile", {headers:{'token':localStorage.getItem('token')}}).then(res=>setmyData(res.data)).catch(err=>console.log(err))
-    },[myData])
+        
+    
+    const fetchData = async () => {
+        try {
+            axios.get("http://localhost:4000/user/myprofile", {headers:{'token':localStorage.getItem('token')}}).then(res=>setMyData(res.data)).catch(err=>console.log(err));
+            const res = await axios.get("http://localhost:3000/users");
+            setUserData(res.data);
+
+                // Filter users data to find matching mobile number and retrieve bank names
+                const matchedUsers = userData.filter(user => user.mobile === myData.mobile);
+                // const matchedBankNames = matchedUsers.map(user => user.bankName);
+
+                // setDonatedBanks(matchedBankNames);
+            console.log(matchedUsers);
+
+        
+        } catch (error) {
+            console.error("Error fetching data"
+                , error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    fetchData();
+}, []);
     console.log(localStorage.getItem('token'));
-    console.log(myData);
+
+    console.log(userData);
+   
     
     return (
         <>

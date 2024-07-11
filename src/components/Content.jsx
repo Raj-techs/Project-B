@@ -6,6 +6,7 @@ import Groups from './Groups'
 import SingleGroup from '../pages/SingleGroup'
 import Transfer from '../pages/Transfer'
 import DisplayAdim from './DisplayAdim'
+import SpecialCases from './SpecialCases'
 
 const Content = (props) => {
   const [showAddUser, setShowAddUser] = useState(false);
@@ -102,9 +103,10 @@ const Content = (props) => {
           {showAddUser ? <AddUser data={props.data}/> : null}
           {showAllUsers ? <AllUsers data={props.data} /> : null}
           {showGroups ? <Groups data={props.data} /> : null}
-          {showUpdate ? <Update /> : null}
-          {showTransfer ? <Transfer /> : null}
+          {showUpdate ? <Update data={props.data} /> : null}
+          {showTransfer ? <Transfer data={props.data}/> : null}
           {showDisplay ? <DisplayAdim /> : null}
+          {showSpecial ? <SpecialCases /> : null}
           {/* {showAddUser ? <AddUser/> : null} */}
           {/* <AddUser/> */}
           {/* <Update/> */}

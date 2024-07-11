@@ -13,6 +13,8 @@ const UserReq = ({bloodBankRef,
         const [isSignupDropdownOpen, setIsSignupDropdownOpen] = useState(false);
         const [isSigninDropdownOpen, setIsSigninDropdownOpen] = useState(false);
         const [isServicesDropdownOpen, setIsServicesDropdownOpen] = useState(false);
+
+        const defaultDate = new Date().toISOString().slice(0, 10)
       
         const navigate = useNavigate();
       
@@ -40,15 +42,14 @@ const UserReq = ({bloodBankRef,
             usrlocation:"",
             units:"",
             mobile:"",
-            bankname:"",
-            bankmobile:"",
+            email:"",
             certificates:"",
-            stamps:"",
-            doctorName:"",
             state:"",
-            date:""
+            city:"",
+            district:"",
+            date:defaultDate
           })
-          const {username,group,usrlocation,units,mobile,bankname,bankmobile,certificates,stamps,doctorname,state,date}=reqData;
+          const {username,group,usrlocation,units,mobile,certificates,email,district,state,city,date}=reqData;
           const handleChange=(e)=>{
             setreqData({...reqData,[e.target.name]:e.target.value})
           }
@@ -59,7 +60,7 @@ const UserReq = ({bloodBankRef,
             console.log(reqData);
             try {
             
-              await axios.post('http://localhost:3000/requests', reqData); // Replace with your JSON Server endpoint
+              await axios.post('http://localhost:4000/user/request', reqData); // Replace with your JSON Server endpoint
         
               alert("Requested Successfully .")
           } catch (error) {
@@ -236,30 +237,18 @@ const UserReq = ({bloodBankRef,
         </div>
         <div>
           <label htmlFor="ToDate" className="block text-left mb-1">
-            Bank Name
+              Email
           </label>
           <input
             type="text"
-            placeholder="Enter Bank Name"
-            name="bankname"
-            value={bankname}
+            placeholder="Enter Email"
+            name="email"
+            value={email}
             onChange={handleChange}
             className="bg-gray-200 rounded-lg p-3 w-full"
           />
         </div>
-        <div>
-          <label htmlFor="contactPerson" className="block text-left mb-1">
-            Bank Mobile No
-          </label>
-          <input
-            type="text"
-            placeholder="Enter Bank mobile"
-            name="bankmobile"
-            value={bankmobile}
-            onChange={handleChange}
-            className="bg-gray-200 rounded-lg p-3 w-full"
-          />
-        </div>
+        
         <div>
           <label htmlFor="contactPersonEmail" className="block text-left mb-1">
             Certificates
@@ -274,52 +263,20 @@ const UserReq = ({bloodBankRef,
           />
         </div>
         <div>
-          <label htmlFor="contactNo" className="block text-left mb-1">
-            Stamps No
+          <label htmlFor="city" className="block text-left mb-1">
+            City
           </label>
           <input
             type="text"
-            placeholder="Enter Stamp number"
-            name="stamps"
-            value={stamps}
+            placeholder="Enter City"
+            name="city"
+            value={city}
             onChange={handleChange}
             className="bg-gray-200 rounded-lg p-3 w-full"
           />
-          {/* {errors.contactNo && (
-            <p className="text-red-500 text-left">{errors.contactNo}</p>
-          )} */}
-        </div>
-        <div>
-          <label htmlFor="contactNo" className="block text-left mb-1">
-            Date
-          </label>
-          <input
-            type="text"
-            placeholder="Enter DD/MM/YYYY"
-            name="date"
-            value={date}
-            onChange={handleChange}
-            className="bg-gray-200 rounded-lg p-3 w-full"
-          />
-          {/* {errors.contactNo && (
-            <p className="text-red-500 text-left">{errors.contactNo}</p>
-          )} */}
         </div>
         <div>
           <label htmlFor="state" className="block text-left mb-1">
-            Doctor Name
-          </label>
-          <input
-            type="text"
-            placeholder="Enter Doctor Name"
-            name="doctorname"
-            value={doctorname}
-            onChange={handleChange}
-            className="bg-gray-200 rounded-lg p-3 w-full"
-          />
-        </div>
-        <div>
-          <label htmlFor="district" className="block text-left mb-1">
             State
           </label>
           <input
@@ -327,6 +284,19 @@ const UserReq = ({bloodBankRef,
             placeholder="Enter State"
             name="state"
             value={state}
+            onChange={handleChange}
+            className="bg-gray-200 rounded-lg p-3 w-full"
+          />
+        </div>
+        <div>
+          <label htmlFor="district" className="block text-left mb-1">
+            District
+          </label>
+          <input
+            type="text"
+            placeholder="Enter District"
+            name="district"
+            value={district}
             onChange={handleChange}
             className="bg-gray-200 rounded-lg p-3 w-full"
           />

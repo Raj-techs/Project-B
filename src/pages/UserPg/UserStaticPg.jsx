@@ -16,9 +16,28 @@ const UserStaticPg = ({
     let lists = ["Status","Donate","Need"]
     const [data,setData]=useState({})
     let User;
-    useEffect(_=>{
-     User =  axios.get('http://localhost:5000/profile').then(res=>{setData(res.data)}).catch(err=>{console.log(err);})
-    },[])
+    const navigate = useNavigate();
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const token = localStorage.getItem('token');
+          const response = await axios.get('http://localhost:5000/profile', {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
+          setData(response.data);
+        } catch (error) {
+          console.error(error);
+          if (error.response && error.response.status === 401) {
+            // Handle unauthorized error (e.g., redirect to login)
+            navigate('/login');
+          }
+        }
+      };
+  
+      fetchData();
+    }, [navigate]);
 
     console.log(data);
 
@@ -27,7 +46,6 @@ const UserStaticPg = ({
   const [isSigninDropdownOpen, setIsSigninDropdownOpen] = useState(false);
   const [isServicesDropdownOpen, setIsServicesDropdownOpen] = useState(false);
 
-  const navigate = useNavigate();
 
   const scrollToSection = (ref) => {
     ref.current.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -162,7 +180,7 @@ const UserStaticPg = ({
         <button onClick={handleSignOut}>Sign Out</button>
       {/* </div> */}
     </nav>
-      <Status/>
+      <Status loggedInUserMobile={data}/>
     </>
   )
 };
